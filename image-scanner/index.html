@@ -1,51 +1,15 @@
-// index.html
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escanear Imagem</title>
-    <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
-    <script defer src="script.js"></script>
+    <title>Scanner de Imagem</title>
 </head>
 <body>
-    <h1>Escanear Imagem</h1>
-    <video id="video" autoplay></video>
-    <button id="scanButton">Escanear</button>
-    <p id="result"></p>
+    <h2>Escaneie uma Imagem</h2>
+    <video id="camera" autoplay></video>
+    <button onclick="tirarFoto()">Escanear</button>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <script src="script.js"></script>
 </body>
 </html>
-
-// script.js
-document.addEventListener("DOMContentLoaded", async () => {
-    const video = document.getElementById("video");
-    const scanButton = document.getElementById("scanButton");
-    const result = document.getElementById("result");
-
-    // Ativar a câmera
-    if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream;
-            })
-            .catch(error => console.error("Erro ao acessar a câmera:", error));
-    }
-
-    // Carregar modelo de reconhecimento de imagem
-    const model = await mobilenet.load();
-    
-    scanButton.addEventListener("click", async () => {
-        const tensor = tf.browser.fromPixels(video);
-        const predictions = await model.classify(tensor);
-        
-        if (predictions.length > 0) {
-            const label = predictions[0].className;
-            result.textContent = `Imagem reconhecida: ${label}`;
-            
-            if (label.includes("banana")) {
-                window.location.href = "https://meusite.com/conteudo-especifico";
-            }
-        }
-    });
-});
